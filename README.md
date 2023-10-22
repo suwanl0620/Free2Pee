@@ -1,5 +1,5 @@
 # Free2Pee
-#By Suwan Lee and Sammy Kee
+By Suwan Lee and Sammy Kee
 ## Inspiration
 Free2Pee was born from a desire to promote and enable inclusivity and convenience at UVA to empower all individuals, including women, nonbinary people, parents, and those in need of accessible restrooms. Inspired by the prevalence and success of Google Maps, which allows users to navigate academic buildings and beyond, we aimed to create a tool that focuses on the unique needs of various users. By providing information about safe, well-maintained restrooms, inclusive facilities, and promoting hygiene and security, we aim to help everyone confidently explore public spaces, ensuring they have access to clean and safe restroom facilities. We believe that informed choices and inclusivity are key to fostering empowerment for all, while making everyday life more convenient.  
 
