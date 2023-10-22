@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marker Placement with Marker Tooltips</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        body{
+            background-color: lightsteelblue;
+        }
+        #map { height: 450px; }
+        #marker-form { display: none; }
+        
+        label{
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color: #104363;
+            padding: 10px 20px;
+            
+        }
+        label + label{
+            margin-top: 10px;
+        }
+        .title {
+            font-family: 'Press Start 2P', sans-serif;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center; /* Center the text */
+            border: 2px outset #333; /* Add a border around the title */
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .text{
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color:black;
+            text-align: center;
+
+        }
+        select{
+            font-size: 10px;
+            padding: 10px;
+            width: 150px;
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+        button{
+            font-size: 10px;
+            padding: 10px;
+            width: 150px;
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 class="title">Free2Pee</h1>
+    <h2 class="text">Tap anywhere to add a bathroom marker!</h2>
+    <div id="map"></div>
+    <form id="marker-form">
+        
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="">Select</option>
+            <option value="Women">Women</option>
+            <option value="Men">Men</option>
+            <option value="Neutral">Neutral</option>
+        </select>
+        <br>
+        <label for="baby-station">Baby Station:</label>
+        <select id="baby-station" name="baby-station">
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+        <br>
+        <label for="accessibility">Accessibility:</label>
+        <select id="accessibility" name="accessibility">
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+        <br>
+        <label for="review">Review:</label>
+        <input type="text" id="review" name="review">
+        <br>
+        <button type="submit">Add Marker</button>
+    </form>
+    <script>
+        const map = L.map('map').setView([38.0336, -78.5079], 17);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const markers = [];
+
+        let tempMarker = null;
+
+        map.on('click', (e) => {
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+            }
+
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            tempMarker = L.marker([lat, lng]).addTo(map);
+
+            // Handle marker tooltip
+            tempMarker.bindTooltip("Click to see attributes");
+
+            tempMarker.on('mouseover', function () {
+                tempMarker.setTooltipContent("Click to submit to make this marker permanent").openTooltip();
+            });
+
+            tempMarker.on('mouseout', function () {
+                tempMarker.closeTooltip();
+            });
+
+            // Show the form when a temporary marker is placed
+            document.getElementById('marker-form').style.display = 'block';
+        });
+
+        const markerForm = document.getElementById('marker-form');
+        markerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const gender = document.getElementById('gender').value;
+            const babyStation = document.getElementById('baby-station').value;
+            const accessibility = document.getElementById('accessibility').value;
+            const review = document.getElementById('review').value;
+
+            if (tempMarker) {
+                const lat = tempMarker.getLatLng().lat;
+                const lng = tempMarker.getLatLng().lng;
+                tempMarker.closeTooltip();
+                markers.push({
+                    lat,
+                    lng,
+                    gender,
+                    babyStation,
+                    accessibility,
+                    review
+                });
+
+                // Update the existing marker tooltip
+                tempMarker.bindTooltip(`Gender: ${gender}<br>Baby Station: ${babyStation}<br>Accessibility: ${accessibility}<br>Review: ${review}`).openTooltip();
+                tempMarker = null;
+
+                // Hide the form after a marker is made permanent
+                document.getElementById('marker-form').style.display = 'none';
+
+                markerForm.reset();
+
+            }
+        });
+    </script>
+</body>
+</html>
